@@ -18,3 +18,11 @@ from mrcnn import utils
 import mrcnn.model as modellib
 from mrcnn import visualize
 from mrcnn.model import log
+
+
+MODEL_DIR = 'model'
+COCO_MODEL_PATH = 'model/mask_rcnn_coco.h5'
+
+# download coco base trained weights
+if not os.path.exists(COCO_MODEL_PATH):
+    utils.download_trained_weights(COCO_MODEL_PATH)

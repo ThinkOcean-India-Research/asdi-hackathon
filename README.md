@@ -6,6 +6,7 @@
 - mention that peeps gotta clone with the submodules recursively
 - updated masked-rcnn to tf2 via : https://github.com/matterport/Mask_RCNN/issues/1070#issuecomment-740430758
   todo
+- change KE.Layer to KL.Layer in mrcnn model.py
 
 - setup training the masked rcnn
 - train and test
