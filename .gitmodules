@@ -1,3 +1,6 @@
 [submodule "building-detection/utils/solaris"]
 	path = building-detection/utils/solaris
 	url = git@github.com:CosmiQ/solaris.git
+[submodule "building-detection/utils/Mask_RCNN"]
+	path = building-detection/utils/Mask_RCNN
+	url = git@github.com:matterport/Mask_RCNN.git
