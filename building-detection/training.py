@@ -54,7 +54,15 @@ class BuildingFootprintDataset(Dataset):
             xmax = np.max(pos[1])
             ymin = np.min(pos[0])
             ymax = np.max(pos[0])
+
+            # to ensure nonzero bounding boxes
+            if xmax == xmin:
+                xmax += 0.1
+            if ymax == ymin:
+                ymax += 0.1
+
             boxes.append([xmin, ymin, xmax, ymax])
+
         # convert everything into a torch.Tensor
         boxes = torch.as_tensor(boxes, dtype=torch.float32)
         # there is only one class, the building. Has to be one as zero refers to the background
@@ -125,9 +133,10 @@ data_loader = torch.utils.data.DataLoader(
 
 images, targets = next(iter(data_loader))
 images = list(image for image in images)
+# print(images[0].shape)
 targets = [{k: v for k, v in t.items()} for t in targets]
 output = model(images, targets)   # Returns losses and detections
 # # For inference
-# model.eval()
-# x = [torch.rand(3, 300, 400), torch.rand(3, 500, 400)]
-# predictions = model(x)           # Returns predictions
+model.eval()
+x = [torch.rand(3, 300, 400), torch.rand(3, 500, 400)]
+predictions = model(x)           # Returns predictions
