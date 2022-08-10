@@ -8,15 +8,18 @@ from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
 from torchvision.models.detection import FasterRCNN
 from torchvision.models.detection.rpn import AnchorGenerator
 from torchvision.models.detection.mask_rcnn import MaskRCNNPredictor
-import torchvision.transforms as T
-from torchvision import utils
+# import torchvision.transforms as T
+# from torchvision import utils
 
-
+import utils.transforms as T
+from utils.engine import train_one_epoch, evaluate
+import utils.utils as utils
 # print(torch.cuda.is_available())
 
 # generated in create_masks.py
 SATELLITE_IMAGES_PATH = 'data/AOI_1_rio/imgs'
 MASKS_PATH = 'data/AOI_1_rio/masks'
+IMG_SIZE = (406, 438)
 
 
 class BuildingFootprintDataset(Dataset):
@@ -31,9 +34,10 @@ class BuildingFootprintDataset(Dataset):
 
     def __getitem__(self, idx):
         img = Image.open(os.path.join(SATELLITE_IMAGES_PATH,
-                         self.imgs[idx])).convert("RGB")
+                         self.imgs[idx])).convert("RGB").resize(IMG_SIZE)
         # print(np.array(img).shape)
-        mask = Image.open(os.path.join(MASKS_PATH, self.masks[idx]))
+        mask = Image.open(os.path.join(
+            MASKS_PATH, self.masks[idx])).resize(IMG_SIZE)
         mask = np.array(mask)
         # instances are encoded as different colors
         obj_ids = np.unique(mask)
@@ -104,21 +108,26 @@ def get_transform(train):
 
 
 model = torchvision.models.detection.fasterrcnn_resnet50_fpn(pretrained=True)
-dataset = BuildingFootprintDataset(transforms=get_transform(train=True))
+dataset = BuildingFootprintDataset(get_transform(train=True))
 
-print(dataset[10])
-# data_loader = torch.utils.data.DataLoader(
-#     dataset, batch_size=2, shuffle=True, num_workers=4,
-#     # collate_fn=utils.collate_fn
-# )
+# img, target = dataset[0]
+# print(img.shape, target['masks'].shape)
+# img, target = dataset[1200]
+# print(img.shape, target['masks'].shape)
+# print(dataset[1200])
 
 
-# # For Training
-# images, masks = next(iter(data_loader))
-# images = list(image for image in images)
-# masks = [m for m in masks]
-# output = model(images, masks)   # Returns losses and detections
-# For inference
+data_loader = torch.utils.data.DataLoader(
+    dataset, batch_size=2, shuffle=True, num_workers=4,
+    collate_fn=utils.collate_fn
+)
+
+
+images, targets = next(iter(data_loader))
+images = list(image for image in images)
+targets = [{k: v for k, v in t.items()} for t in targets]
+# output = model(images, targets)   # Returns losses and detections
+# # For inference
 # model.eval()
 # x = [torch.rand(3, 300, 400), torch.rand(3, 500, 400)]
 # predictions = model(x)           # Returns predictions
