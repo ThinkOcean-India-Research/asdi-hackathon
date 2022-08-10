@@ -57,7 +57,8 @@ class BuildingFootprintDataset(Dataset):
         labels = torch.ones((num_objs,), dtype=torch.int64)
         masks = torch.as_tensor(masks, dtype=torch.uint8)
         image_id = torch.tensor([idx])
-        area = (boxes[:, 3] - boxes[:, 1]) * (boxes[:, 2] - boxes[:, 0])
+        area = (boxes[:, 3] - boxes[:, 1]) * \
+            (boxes[:, 2] - boxes[:, 0]) if len(boxes) > 0 else 0
 
         target = {
             'boxes': boxes,
@@ -105,7 +106,7 @@ def get_transform(train):
 model = torchvision.models.detection.fasterrcnn_resnet50_fpn(pretrained=True)
 dataset = BuildingFootprintDataset(transforms=get_transform(train=True))
 
-
+print(dataset[10])
 # data_loader = torch.utils.data.DataLoader(
 #     dataset, batch_size=2, shuffle=True, num_workers=4,
 #     # collate_fn=utils.collate_fn
