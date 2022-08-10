@@ -18,7 +18,7 @@ import utils.utils as utils
 
 # generated in create_masks.py
 SATELLITE_IMAGES_PATH = 'data/AOI_1_rio/imgs'
-MASKS_PATH = 'data/AOI_1_rio/masks'
+MASKS_PATH = 'data/AOI_1_rio/masks_nonzero'
 IMG_SIZE = (406, 438)
 
 
@@ -26,18 +26,18 @@ class BuildingFootprintDataset(Dataset):
     def __init__(self, transforms=None) -> None:
         super().__init__()
         self.transforms = transforms
-        self.imgs = sorted(os.listdir(SATELLITE_IMAGES_PATH))
-        self.masks = sorted(os.listdir(MASKS_PATH))
+        # self.imgs = sorted(os.listdir(SATELLITE_IMAGES_PATH))
+        self.filenames = sorted(os.listdir(MASKS_PATH))
 
     def __len__(self) -> int:
-        return len(self.imgs)
+        return len(self.filenames)
 
     def __getitem__(self, idx):
         img = Image.open(os.path.join(SATELLITE_IMAGES_PATH,
-                         self.imgs[idx])).convert("RGB").resize(IMG_SIZE)
+                         self.filenames[idx])).convert("RGB").resize(IMG_SIZE)
         # print(np.array(img).shape)
         mask = Image.open(os.path.join(
-            MASKS_PATH, self.masks[idx])).resize(IMG_SIZE)
+            MASKS_PATH, self.filenames[idx])).resize(IMG_SIZE)
         mask = np.array(mask)
         # instances are encoded as different colors
         obj_ids = np.unique(mask)
@@ -126,7 +126,7 @@ data_loader = torch.utils.data.DataLoader(
 images, targets = next(iter(data_loader))
 images = list(image for image in images)
 targets = [{k: v for k, v in t.items()} for t in targets]
-# output = model(images, targets)   # Returns losses and detections
+output = model(images, targets)   # Returns losses and detections
 # # For inference
 # model.eval()
 # x = [torch.rand(3, 300, 400), torch.rand(3, 500, 400)]
