@@ -10,3 +10,4 @@
 
 - setup training the masked rcnn
 - train and test
+- do you need indiv building masks per picure? or is one common mask okay
