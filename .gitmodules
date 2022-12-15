@@ -4,3 +4,6 @@
 # [submodule "building-detection/utils/segmentation_models"]
 # 	path = building-detection/utils/segmentation_models
 # 	url = git@github.com:qubvel/segmentation_models.pytorch.git
+[submodule "building-detection/utils/segmentation_models.pytorch"]
+	path = building-detection/utils/segmentation_models.pytorch
+	url = git@github.com:qubvel/segmentation_models.pytorch.git
