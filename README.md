@@ -1,6 +1,7 @@
 
 ## References:
 
+- check out vaex https://github.com/vaexio/vaex
 - renaming submodules : https://stackoverflow.com/questions/4526910/rename-a-git-submodule
 - semantic segmentation is the task we are trying to do
 - `segmentation-model-pt` downloads models to ~/.cache/torch/hub in case you want to delete/look at it later
